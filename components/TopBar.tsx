@@ -28,7 +28,6 @@ const TopBar: React.FC<TopBarProps> = ({ onNavigate, onLogout, isSandbox, userOv
   const user = userOverride || authUser;
   const isAdmin = user?.role === Role.SUPER_ADMIN || user?.role === Role.ADMIN;
   
-  // Directives are high priority notifications
   const unreadCount = notifications.filter(n => !n.is_read).length + broadcasts.length;
 
   useEffect(() => {
@@ -82,9 +81,9 @@ const TopBar: React.FC<TopBarProps> = ({ onNavigate, onLogout, isSandbox, userOv
       <div className="flex items-center gap-2 md:gap-6">
         {!isSearchOpen && <button onClick={() => setIsSearchOpen(true)} className="md:hidden p-2 text-zinc-400"><Search className="w-5 h-5" /></button>}
 
-        <div className={`hidden sm:flex items-center gap-2 px-3 py-1 rounded-full border ${isSandbox ? 'border-amber-500/20 bg-amber-500/5 text-amber-500' : 'border-violet-500/20 bg-violet-500/5 text-violet-500'}`}>
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/20 bg-violet-500/5 text-violet-500">
            <Globe className="w-3.5 h-3.5 animate-pulse" />
-           <span className="text-[10px] font-bold uppercase tracking-widest">{isSandbox ? 'Mirror Link' : 'Operational'}</span>
+           <span className="text-[10px] font-bold uppercase tracking-widest">Operational</span>
         </div>
 
         <div className="relative" ref={notifRef}>

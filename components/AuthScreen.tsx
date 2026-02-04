@@ -16,7 +16,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLaunchSandbox }) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSandboxOpen, setIsSandboxOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,53 +65,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLaunchSandbox }) => {
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-600/10 rounded-full blur-[120px] pointer-events-none"></div>
       
-      {/* Sandbox Slide-in Panel */}
-      <div className={`fixed inset-y-0 right-0 w-80 bg-stone-900 border-l border-stone-800 z-[100] transform transition-transform duration-500 ease-in-out shadow-[ -20px_0_50px_rgba(0,0,0,0.5)] ${isSandboxOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="h-full flex flex-col p-8">
-          <div className="flex items-center justify-between mb-12">
-            <div className="flex items-center gap-3">
-              <FlaskConical className="w-6 h-6 text-stone-400" />
-              <h2 className="text-xl font-bold text-stone-200 tracking-tighter uppercase">Mirror Sandbox</h2>
-            </div>
-            <button onClick={() => setIsSandboxOpen(false)} className="p-2 text-stone-500 hover:text-white transition-colors">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="space-y-6">
-             <p className="text-[10px] text-stone-500 font-mono uppercase tracking-[0.2em] leading-relaxed">
-               Select an environment node to enter the local mirror. No registration or cloud sign-in required.
-             </p>
-
-             <button onClick={() => onLaunchSandbox('john')} className="w-full p-6 bg-stone-800/50 border border-stone-700 rounded-2xl group hover:border-violet-500/50 transition-all text-left">
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="w-10 h-10 bg-violet-500/10 rounded-lg flex items-center justify-center border border-violet-500/20 text-violet-500 group-hover:bg-violet-600 group-hover:text-white transition-all">
-                    <Shield className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-stone-100 group-hover:text-violet-400 transition-colors">John Doe</h3>
-                    <p className="text-[9px] text-stone-500 font-mono uppercase">Node Administrator (SB)</p>
-                  </div>
-                </div>
-                <p className="text-[10px] text-stone-600 font-light italic">View Admin Control, Schema Governance, and Member Validation.</p>
-             </button>
-
-             <button onClick={() => onLaunchSandbox('jane')} className="w-full p-6 bg-stone-800/50 border border-stone-700 rounded-2xl group hover:border-stone-400 transition-all text-left">
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="w-10 h-10 bg-stone-700 rounded-lg flex items-center justify-center border border-stone-600 text-stone-400 group-hover:bg-stone-200 group-hover:text-black transition-all">
-                    <Users className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-stone-100 group-hover:text-white transition-colors">Jane Doe</h3>
-                    <p className="text-[9px] text-stone-500 font-mono uppercase">Talent Member (SB)</p>
-                  </div>
-                </div>
-                <p className="text-[10px] text-stone-600 font-light italic">View Member Profile, Proof Submission, and dynamic schema sync.</p>
-             </button>
-          </div>
-        </div>
-      </div>
-
       <div className="relative z-10 w-full max-w-4xl flex flex-col md:flex-row bg-zinc-900/40 border border-zinc-800/50 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl">
         <div className="flex-1 p-8 md:p-12 border-b md:border-b-0 md:border-r border-zinc-800/50 flex flex-col justify-between bg-black/20">
           <div>
@@ -123,9 +75,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLaunchSandbox }) => {
             </p>
           </div>
           <div className="space-y-4">
-            <button onClick={() => setIsSandboxOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-stone-800/50 border border-stone-700 rounded-lg text-stone-400 hover:text-violet-400 hover:border-violet-500/50 transition-all text-[10px] font-bold uppercase tracking-widest">
-              <FlaskConical className="w-3.5 h-3.5" /> Open Mirror Panel
-            </button>
             <div className="flex gap-4 border-t border-zinc-800/50 pt-6">
                <div className="flex flex-col">
                   <span className="text-zinc-500 text-[10px] font-mono uppercase">Network</span>

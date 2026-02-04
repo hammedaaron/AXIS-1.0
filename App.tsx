@@ -17,11 +17,6 @@ import ProofQueue from './views/ProofQueue';
 import MemberSettings from './views/MemberSettings';
 import { NAV_ITEMS } from './constants';
 
-const SANDBOX_PROFILES = {
-  JOHN: { id: 'sb-john-admin', name: 'John Doe', handle: '@johndoe', role: Role.SUPER_ADMIN, rank: Rank.GOLD, avatar_url: '' },
-  JANE: { id: 'sb-jane-member', name: 'Jane Doe', handle: '@janedoe', role: Role.JOBBER, rank: Rank.BRONZE, avatar_url: '' }
-};
-
 const MobileNav: React.FC<{ currentView: string; onNavigate: (p: string) => void; role?: Role }> = ({ currentView, onNavigate, role }) => {
   const filteredNav = NAV_ITEMS.filter(item => role && item.roles.includes(role));
   return (
@@ -40,12 +35,10 @@ const MobileNav: React.FC<{ currentView: string; onNavigate: (p: string) => void
   );
 };
 
-const MainLayout: React.FC<{ sandboxUser?: any; onExitSandbox?: () => void }> = ({ sandboxUser, onExitSandbox }) => {
-  const { user: authUser, logout: authLogout } = useAuth();
+const MainLayout: React.FC = () => {
+  const { user, logout: authLogout } = useAuth();
   const [currentView, setCurrentView] = useState('overview');
   const [selectedJobber, setSelectedJobber] = useState<Jobber | null>(null);
-
-  const user = sandboxUser || authUser;
 
   useEffect(() => {
     if (user?.role === Role.JOBBER) setCurrentView('dashboard');
@@ -53,8 +46,7 @@ const MainLayout: React.FC<{ sandboxUser?: any; onExitSandbox?: () => void }> = 
   }, [user]);
 
   const handleLogout = async () => {
-    if (onExitSandbox) onExitSandbox();
-    else await authLogout();
+    await authLogout();
   };
 
   const renderView = () => {
@@ -80,7 +72,7 @@ const MainLayout: React.FC<{ sandboxUser?: any; onExitSandbox?: () => void }> = 
     <div className="flex min-h-screen bg-[#09090b] text-zinc-300">
       <Sidebar currentView={currentView} onNavigate={setCurrentView} userRoleOverride={user?.role} />
       <div className="flex-1 flex flex-col relative overflow-hidden pb-16 md:pb-0">
-        <TopBar onNavigate={setCurrentView} onLogout={handleLogout} isSandbox={!!sandboxUser} userOverride={user} />
+        <TopBar onNavigate={setCurrentView} onLogout={handleLogout} isSandbox={false} userOverride={user} />
         <main className="flex-1 overflow-y-auto overflow-x-hidden bg-grid-zinc-900/[0.02]">
           {renderView()}
         </main>
@@ -95,17 +87,14 @@ const AppContent: React.FC = () => {
   const { isLoading: authLoading, user } = useAuth();
   const { isLoading: dataLoading } = useData();
   const [isSplashing, setIsSplashing] = useState(true);
-  const [sandboxUser, setSandboxUser] = useState<any>(null);
 
   useEffect(() => {
-    // Splash screen duration: 1.5s for branding, then check auth
     const splashTimer = setTimeout(() => {
       setIsSplashing(false);
     }, 1500);
     return () => clearTimeout(splashTimer);
   }, []);
 
-  // Show splash for branding feel
   if (isSplashing) {
     return (
       <div className="h-screen bg-[#09090b] flex flex-col items-center justify-center grid-bg">
@@ -115,7 +104,6 @@ const AppContent: React.FC = () => {
     );
   }
 
-  // Handle actual loading states from Contexts
   if (authLoading || (user && dataLoading)) {
     return (
       <div className="h-screen bg-[#09090b] flex flex-col items-center justify-center">
@@ -127,8 +115,7 @@ const AppContent: React.FC = () => {
     );
   }
 
-  if (sandboxUser) return <MainLayout sandboxUser={sandboxUser} onExitSandbox={() => setSandboxUser(null)} />;
-  if (!user) return <AuthScreen onLaunchSandbox={(type) => setSandboxUser(type === 'john' ? SANDBOX_PROFILES.JOHN : SANDBOX_PROFILES.JANE)} />;
+  if (!user) return <AuthScreen onLaunchSandbox={() => {}} />;
   return <MainLayout />;
 };
 
