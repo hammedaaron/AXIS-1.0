@@ -5,11 +5,7 @@ import { Shield, Key, AtSign, User as UserIcon, ArrowLeft, AlertCircle, Loader2,
 
 type AuthMode = 'login' | 'register' | 'reset';
 
-interface AuthScreenProps {
-  onLaunchSandbox: (type: 'john' | 'jane') => void;
-}
-
-const AuthScreen: React.FC<AuthScreenProps> = ({ onLaunchSandbox }) => {
+const AuthScreen: React.FC = () => {
   const { login, register, resetPassword, isGenesisMode } = useAuth();
   const [mode, setMode] = useState<AuthMode>('login');
   const [formData, setFormData] = useState({ name: '', email: '', handle: '', password: '', confirmPassword: '' });

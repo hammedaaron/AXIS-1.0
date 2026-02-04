@@ -115,7 +115,7 @@ const AppContent: React.FC = () => {
     );
   }
 
-  if (!user) return <AuthScreen onLaunchSandbox={() => {}} />;
+  if (!user) return <AuthScreen />;
   return <MainLayout />;
 };
 

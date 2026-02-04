@@ -64,12 +64,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           clearTimeout(safetyTimer);
         }
       } else {
-        // Fallback for demo/sandbox
+        // Fallback for local/demo mode
         setChannels([
           { id: 'chan-general', name: 'CORE_OPS', description: 'Central operational hub', is_private: false, type: 'public', member_ids: [] }
         ]);
         setBroadcasts([
-          { id: '1', message: 'Welcome to AXIS Sandbox Environment.', priority: 'normal', created_at: new Date().toISOString(), author_id: 'system' }
+          { id: '1', message: 'Welcome to AXIS Operations Platform. Neural Uplink Stable.', priority: 'normal', created_at: new Date().toISOString(), author_id: 'system' }
         ]);
         setIsLoading(false);
         clearTimeout(safetyTimer);
@@ -85,6 +85,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .on('postgres_changes', { event: 'INSERT', table: 'messages' }, (p) => {
         const m = p.new;
         if (!m) return;
+        // Fix: Changed 'receiver_id' to 'receiverId' to match the ChatMessage interface property name.
         const formatted: ChatMessage = { 
           id: m.id, 
           senderId: m.sender_id, 

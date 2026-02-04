@@ -1,11 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { Severity } from '../types';
-import { Activity, AlertTriangle, CheckCircle2, TrendingUp, Clock, Server, ShieldCheck, Lock, Globe } from 'lucide-react';
+import { 
+  Activity, AlertTriangle, CheckCircle2, TrendingUp, Clock, 
+  Server, ShieldCheck, Lock, Globe, ChevronDown, ChevronRight 
+} from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const { events, jobbers } = useData();
+  const [isEventsExpanded, setIsEventsExpanded] = useState(false);
 
   const getSeverityColor = (sev: Severity) => {
     switch(sev) {
@@ -67,40 +71,71 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
         <div className="lg:col-span-2 space-y-4 md:space-y-6">
-           <div className="flex items-center justify-between sticky top-0 bg-[#09090b] py-2 z-10">
-              <div className="flex items-center gap-3">
-                <Clock className="w-4 h-4 md:w-5 md:h-5 text-violet-500" />
-                <h2 className="font-bold text-white uppercase tracking-wider text-xs md:text-sm">Global Event Stream</h2>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></span>
-                <span className="text-[9px] md:text-[10px] text-zinc-500 font-mono">LIVE FEED</span>
-              </div>
-           </div>
-
-           <div className="space-y-3 md:space-y-4">
-              {events.length === 0 ? (
-                <div className="py-12 md:py-20 text-center border border-zinc-800 rounded-xl text-zinc-600 font-mono uppercase tracking-widest text-[10px] md:text-xs">
-                  Awaiting Data Packet...
-                </div>
-              ) : (
-                events.map(event => (
-                  <div key={event.id} className="p-3 md:p-4 bg-zinc-900/30 border border-zinc-800 rounded-lg flex gap-3 md:gap-4 animate-in slide-in-from-left duration-500">
-                    <div className={`mt-1 shrink-0 ${getSeverityColor(event.severity)}`}>
-                      {getIcon(event.type)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 mb-1">
-                        <span className="text-xs md:text-sm font-medium text-white line-clamp-2">{event.message}</span>
-                        <span className="text-[8px] md:text-[10px] text-zinc-600 font-mono shrink-0">{new Date(event.created_at).toLocaleTimeString()}</span>
-                      </div>
-                      <div className="text-[8px] md:text-[10px] text-zinc-500 font-mono uppercase tracking-widest truncate">
-                        {event.type} • {event.related_jobber_id || 'SYSTEM_CORE'}
-                      </div>
-                    </div>
+           {/* Toggleable Tactical Folder Tab */}
+           <div className="bg-zinc-900/10 border border-zinc-800/50 rounded-2xl overflow-hidden shadow-sm">
+             <button 
+                onClick={() => setIsEventsExpanded(!isEventsExpanded)}
+                className="w-full flex items-center justify-between p-4 md:p-5 hover:bg-zinc-800/20 transition-all group"
+             >
+                <div className="flex items-center gap-4">
+                  <div className={`p-2 rounded-lg transition-colors ${isEventsExpanded ? 'bg-violet-600/20 text-violet-400' : 'bg-zinc-900 text-zinc-600'}`}>
+                    <Clock className="w-4 h-4 md:w-5 md:h-5" />
                   </div>
-                ))
-              )}
+                  <div className="text-left">
+                    <h2 className="font-black text-white uppercase tracking-[0.2em] text-[10px] md:text-xs">Global Event Stream</h2>
+                    <p className="text-[8px] md:text-[9px] text-zinc-600 font-mono uppercase mt-0.5 tracking-widest">
+                      {events.length} Active Signal Packets
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="hidden sm:flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></span>
+                    <span className="text-[8px] md:text-[10px] text-zinc-600 font-mono tracking-widest">LIVE FEED</span>
+                  </div>
+                  {isEventsExpanded ? (
+                    <ChevronDown className="w-4 h-4 text-zinc-700 group-hover:text-violet-500 transition-colors" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-zinc-700 group-hover:text-violet-500 transition-colors" />
+                  )}
+                </div>
+             </button>
+
+             {/* Expanded Content Area */}
+             <div className={`transition-all duration-300 ease-in-out ${isEventsExpanded ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+               <div className="p-4 md:p-6 pt-0 space-y-3 md:space-y-4 border-t border-zinc-800/30 overflow-y-auto custom-scrollbar max-h-[600px]">
+                  {events.length === 0 ? (
+                    <div className="py-12 md:py-20 text-center border border-zinc-800/50 rounded-xl text-zinc-700 font-mono uppercase tracking-widest text-[10px] md:text-xs">
+                      Awaiting Data Packet...
+                    </div>
+                  ) : (
+                    events.map(event => (
+                      <div key={event.id} className="p-3 md:p-4 bg-zinc-950/40 border border-zinc-800 rounded-lg flex gap-3 md:gap-4 animate-in slide-in-from-top-2 duration-300">
+                        <div className={`mt-1 shrink-0 ${getSeverityColor(event.severity)}`}>
+                          {getIcon(event.type)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 mb-1">
+                            <span className="text-xs md:text-sm font-medium text-white line-clamp-2">{event.message}</span>
+                            <span className="text-[8px] md:text-[10px] text-zinc-600 font-mono shrink-0">{new Date(event.created_at).toLocaleTimeString()}</span>
+                          </div>
+                          <div className="text-[8px] md:text-[10px] text-zinc-500 font-mono uppercase tracking-widest truncate">
+                            {event.type} • {event.related_jobber_id || 'SYSTEM_CORE'}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+               </div>
+               <div className="p-4 bg-zinc-900/20 border-t border-zinc-800/30 flex justify-center">
+                  <button 
+                    onClick={() => setIsEventsExpanded(false)}
+                    className="text-[9px] font-bold text-zinc-700 hover:text-violet-500 uppercase tracking-[0.3em] transition-colors"
+                  >
+                    Collapse Feed
+                  </button>
+               </div>
+             </div>
            </div>
         </div>
 
@@ -131,12 +166,7 @@ const Dashboard: React.FC = () => {
                  </div>
               </div>
 
-              <div className="p-4 bg-violet-500/5 border border-violet-500/20 rounded-lg">
-                 <div className="text-[8px] font-bold uppercase tracking-widest text-violet-500 mb-2 flex items-center gap-2"><Globe className="w-3 h-3" /> Security Protocol</div>
-                 <div className="text-[11px] text-zinc-400 font-light italic leading-relaxed">
-                   Neural Keys are proxied via secure Edge Functions. Your private API credentials never leave the core server environment.
-                 </div>
-              </div>
+              {/* SECURITY PROTOCOL TAB HIDDEN AS REQUESTED */}
 
               {jobbers.filter(j => j.status !== 'active').length > 0 && (
                 <div className="p-4 bg-rose-500/5 border border-rose-500/20 rounded-lg animate-pulse">

@@ -225,6 +225,7 @@ const Messages: React.FC<MessagesProps> = ({ onSelectJobber, userOverride }) => 
     setIsHuddleActive(true);
     setHuddleStatus('connecting');
     try {
+      // Create a new GoogleGenAI instance right before making an API call
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const outCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       outputAudioContextRef.current = outCtx;
@@ -240,6 +241,7 @@ const Messages: React.FC<MessagesProps> = ({ onSelectJobber, userOverride }) => 
               const source = outputAudioContextRef.current.createBufferSource();
               source.buffer = audioBuffer;
               source.connect(outputAudioContextRef.current.destination);
+              // Track end of previous chunk to ensure smooth playback
               nextStartTime = Math.max(nextStartTime, outputAudioContextRef.current.currentTime);
               source.start(nextStartTime);
               nextStartTime += audioBuffer.duration;
