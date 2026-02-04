@@ -1,0 +1,8 @@
+{
+  "name": "CCof current AXIS Operations Platform",
+  "description": "A top-tier, schema-driven operational dashboard for managing high-vetted talent with algorithmic grading and AI-powered evaluation.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
